@@ -82,3 +82,63 @@ profundidade<- 1:50
 
 
 visualza_volumes(altura, largura, profundidade)
+
+
+x <- 1:9; names(x) <- x
+# Multiplication & Power Tables
+x %o% x
+y <- 2:8; names(y) <- paste(y,":", sep = "")
+outer(y, x, "^")
+
+outer(month.abb, 1999:2003, FUN = "paste")
+
+## three way multiplication table: 
+mult_3_dim<-  x %o% x %o% y[1:3]
+
+vol_outer<- largura %o% profundidade %o% altura
+
+
+
+largura<- 1:10
+profundidade <-1:10
+
+altura <-1:2
+
+names(largura) <- largura
+
+names(altura) <- altura
+
+names(profundidade) <- profundidade
+
+vol_outer<- largura %o% profundidade %o% altura
+
+area_outer<- largura %o% profundidade
+
+
+  
+
+df_fab_areas<- 
+  fab %>%
+  rownames_to_column(var = "largura") %>%
+  pivot_longer(cols = -largura,
+               names_to = "profundidade",
+               values_to = "area",
+               names_prefix = "V") %>%
+  mutate(profundidade = as.numeric(profundidade))
+
+
+fab<- as.data.frame(vol_outer, row.names = largura)
+
+df_fab_vol<-
+  fab %>%
+  rownames_to_column(var = "largura") %>%
+  pivot_longer(cols = -largura,
+               names_to = "profundidade",
+               values_to = "area",
+               names_prefix = "V") %>%
+  separate(profundidade, into = c("profundidade","altura")) %>%
+  mutate(profundidade = as.numeric(profundidade),
+         altura = as.numeric(altura),
+         largura =as.numeric(largura))
+
+  

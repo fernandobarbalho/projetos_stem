@@ -14,46 +14,33 @@ library(grid)
 
 
 ### Cálculo e representação de volume
-visualza_volumes<- function(altura,largura, profundidade){
-  #Produto exterior para cálculo da área de todas as combinações de largura e profundidade
+visualiza_volumes<- function(altura,largura, profundidade){
   
-  areas<- outer(largura, profundidade)
+  names(altura) <- altura
+  names(largura) <- largura
+  names(profundidade) <- profundidade
+  #Produto exterior para cálculo do volume de todas as combinações de altura, largura e profundidade
   
-  df_areas<- 
-    as_tibble(areas) %>%
-    mutate(largura = row_number()) %>%
-    pivot_longer(cols = -largura,
-                 names_to = "profundidade",
-                 values_to = "area",
-                 names_prefix = "V") %>%
-    mutate(profundidade = as.numeric(profundidade))
+  volumes<-  largura %o% profundidade %o% altura
   
-  
-  #Gera uma matriz de area e volume
-  
-  volumes<- 
-    outer(df_areas$area, altura) 
-  
-  
-  head(volumes)
-  df_volumes<-
-    as_tibble(volumes) 
+  df_volume<- 
+  as_tibble(volumes) %>%
+  rownames_to_column(var = "largura") %>%
+  pivot_longer(cols = -largura,
+               names_to = "profundidade",
+               values_to = "volume",
+               names_prefix = "V") %>%
+  separate(profundidade, into = c("profundidade","altura")) %>%
+  mutate(profundidade = as.numeric(profundidade),
+         altura = as.numeric(altura),
+         largura =as.numeric(largura))
+
   
   
-  #GEração de dataframe com todas as dimensões
-  df_area_volume<-
-    df_areas %>%
-    bind_cols(df_volumes) %>%
-    pivot_longer(cols= NCOL(df_areas)+1:NCOL(df_volumes),
-                 names_to = "altura",
-                 values_to = "volume",
-                 names_prefix = "V") %>%
-    mutate(altura = as.numeric(altura))
-  
-  titulo<- paste0("L x W x H: ", format(NROW(df_area_volume), big.mark = ".") ," combinações de volume")
+  titulo<- paste0("L x W x H: ", format(NROW(df_volume), big.mark = ".") ," combinações de volume")
   
   #Visualização
-  df_area_volume %>%
+  df_volume %>%
     ggplot(aes(x= largura, y= profundidade)) +
     geom_tile(aes(fill = volume) ) +
     scale_fill_continuous_sequential(palette = "Inferno") +
@@ -91,11 +78,11 @@ altura<- 1:6
 #Vetor de largura
 largura<- 1:50
 
+
 #vetor de profundidade
 profundidade<- 1:50
 
-
-visualza_volumes(altura, largura, profundidade)
+visualiza_volumes(altura, largura, profundidade)
 
 
 ```
