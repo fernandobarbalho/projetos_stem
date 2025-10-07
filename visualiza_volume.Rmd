@@ -37,7 +37,7 @@ visualiza_volumes<- function(altura,largura, profundidade){
 
   
   
-  titulo<- paste0("L x W x H: ", format(NROW(df_volume), big.mark = ".") ," combinações de volume")
+  subtitulo<- paste0("L x W x H: ", format(NROW(df_volume), big.mark = ".") ," combinações de volume")
   
   #Visualização
   df_volume %>%
@@ -62,8 +62,8 @@ visualiza_volumes<- function(altura,largura, profundidade){
     ) +
     facet_wrap(altura~.) +
     labs(
-      title =  titulo,
-      subtitle = "Aplicações de álgebra linear",
+      title =  "Algebra linear faz arte",
+      subtitle = subtitulo,
       caption = "Fernando Barbalho 2025"
     )
 }
